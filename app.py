@@ -4,8 +4,8 @@ import urllib
 import json
 import os
 import requests
-import pycurl
-import cStringIO
+#import pycurl
+#import cStringIO
 
 
 
@@ -20,15 +20,15 @@ app = Flask(__name__)
 
 @app.route('/webhook', methods=['GET','POST'])
 def webhook():
-    buf = cStringIO.StringIO()
-    c = pycurl.Curl()
-    c.setopt(c.HTTPHEADER, ['Authorization:Bearer 55e0b7af149a47a7b0646ad5c264cba4'])
-    c.setopt(c.URL, 'https://api.api.ai/api/query?v=20150910&query=jkjedkj&lang=en&sessionId=59a29603-4bed-4506-999c-6a73c13d4a73&timezone=America/Montreal')
-    c.setopt(c.WRITEFUNCTION, buf.write)
-    c.perform()
+    #buf = cStringIO.StringIO()
+    #c = pycurl.Curl()
+    #c.setopt(c.HTTPHEADER, ['Authorization:Bearer 55e0b7af149a47a7b0646ad5c264cba4'])
+    #c.setopt(c.URL, 'https://api.api.ai/api/query?v=20150910&query=jkjedkj&lang=en&sessionId=59a29603-4bed-4506-999c-6a73c13d4a73&timezone=America/Montreal')
+    #c.setopt(c.WRITEFUNCTION, buf.write)
+    #c.perform()
 
     #req =  json.loads(buf.getvalue())
-    buf.close()
+    #buf.close()
 
     req = request.get_json(silent=True, force=True)
 
