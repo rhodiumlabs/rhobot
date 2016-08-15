@@ -61,7 +61,6 @@ def send_simple_message(req):
     result = req.get("result")
     contexts = result.get("contexts")
     parameters = contexts.get("parameters")
-
     name = parameters.get("name")
     email = parameters.get("from_email")
     message = parameters.get("message")
@@ -70,7 +69,7 @@ def send_simple_message(req):
         "https://api.mailgun.net/v3/sandboxee25071432c844e08c28e9438f9f8986.mailgun.org/messages",
         auth=("api", "key-bece1656953b819fbe56fc0e5f22a0d2"),
         data={"from": email,
-              "to": ["bar@example.com", "postmaster@sandboxee25071432c844e08c28e9438f9f8986.mailgun.org"],
+              "to": "postmaster@sandboxee25071432c844e08c28e9438f9f8986.mailgun.org",
               "subject": "Rho",
               "text": message})
 
