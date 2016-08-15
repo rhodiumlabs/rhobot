@@ -1,7 +1,7 @@
 {
-  "name": "API.AI webhook demonstration",
-  "description": "API.AI webhook demonstration",
-  "repository": "https://github.com/api-ai/apiai-weather-webhook-sample",
-  "logo": "http://xvir.github.io/img/apiai.png",
-  "keywords": ["api.ai", "natural language"]
+  "name": "Rho-bot email webhook",
+  "description": "Rho-bot email webhook",
+  "repository": "https://github.com/turbosnail9/rhobot-email",
+  "logo": "https://rhodium-staging.herokuapp.com/rh-logo.png",
+  "keywords": ["chatbot", "natural language"]
 }
