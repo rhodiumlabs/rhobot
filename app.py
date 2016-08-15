@@ -4,10 +4,9 @@ import urllib
 import json
 import os
 import requests
-#import pycurl
-#import cStringIO
-
-
+import sendgrid
+import os
+from sendgrid.helpers.mail import *
 
 from flask import Flask
 from flask import request
@@ -20,16 +19,6 @@ app = Flask(__name__)
 
 @app.route('/webhook', methods=['GET','POST'])
 def webhook():
-    #buf = cStringIO.StringIO()
-    #c = pycurl.Curl()
-    #c.setopt(c.HTTPHEADER, ['Authorization:Bearer 55e0b7af149a47a7b0646ad5c264cba4'])
-    #c.setopt(c.URL, 'https://api.api.ai/api/query?v=20150910&query=jkjedkj&lang=en&sessionId=59a29603-4bed-4506-999c-6a73c13d4a73&timezone=America/Montreal')
-    #c.setopt(c.WRITEFUNCTION, buf.write)
-    #c.perform()
-
-    #req =  json.loads(buf.getvalue())
-    #buf.close()
-
     req = request.get_json(silent=True, force=True)
 
     print("Request:")
@@ -57,6 +46,18 @@ def processRequest(req):
 
 
 
+sg = sendgrid.SendGridAPIClient(apikey='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')
+from_email = Email("test@example.com")
+subject = "Hello World from the SendGrid Python Library!"
+to_email = Email("test@example.com")
+content = Content("text/plain", "Hello, Email!")
+mail = Mail(from_email, subject, to_email, content)
+response = sg.client.mail.send.post(request_body=mail.get())
+
+print(response.status_code)
+print(response.body)
+print(response.headers)
+
 def send_simple_message(req):
     result = req.get("result")
     contexts = result.get("contexts")
@@ -65,13 +66,6 @@ def send_simple_message(req):
     email = parameters.get("from_email")
     message = parameters.get("message")
     print message
-    return requests.post(
-        "https://api.mailgun.net/v3/sandboxee25071432c844e08c28e9438f9f8986.mailgun.org/messages",
-        auth=("api", "key-bece1656953b819fbe56fc0e5f22a0d2"),
-        data={"from": email,
-              "to": "postmaster@sandboxee25071432c844e08c28e9438f9f8986.mailgun.org",
-              "subject": "Rho",
-              "text": message})
 
 def makeWebhookResult(data):
     query = data.get('query')
@@ -108,7 +102,7 @@ def makeWebhookResult(data):
         "speech": speech,
         "displayText": speech,
         "data": data,
-        # "contextOut": [],
+        "contextOut": [],
         "source": "rhobot-email"
     }
 
