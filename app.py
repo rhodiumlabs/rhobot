@@ -46,13 +46,16 @@ def processRequest(req):
 
 
 
-sg = sendgrid.SendGridAPIClient(apikey='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')
+sg = sendgrid.SendGridClient('app55133339@heroku.com', 'dumddfmr5049')
 from_email = Email("test@example.com")
 subject = "Hello World from the SendGrid Python Library!"
 to_email = Email("test@example.com")
 content = Content("text/plain", "Hello, Email!")
 mail = Mail(from_email, subject, to_email, content)
 response = sg.client.mail.send.post(request_body=mail.get())
+print(response.status_code)
+print(response.body)
+print(response.headers)
 
 print(response.status_code)
 print(response.body)
