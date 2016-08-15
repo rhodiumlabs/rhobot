@@ -28,8 +28,9 @@ def webhook():
     return r
 
 
+
 def processRequest(req):
-    if req.get("result").get("action") != "yahooWeatherForecast":
+    if req.get("result").get("action") != "rhobot-email":
         return {}
     baseurl = "https://query.yahooapis.com/v1/public/yql?"
     yql_query = makeYqlQuery(req)
@@ -51,6 +52,19 @@ def makeYqlQuery(req):
 
     return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
 
+def send_simple_message(req):
+    result = req.get("result")
+    parameters = result.get("parameters")
+    name = parameters.get("name")
+    email = parameters.get("from_email")
+    message = parameters.get("message")
+    return requests.post(
+        "https://api.mailgun.net/v3/YOUR_DOMAIN_NAME/messages",
+        auth=("api", "key-bece1656953b819fbe56fc0e5f22a0d2"),
+        data={"from": <email>,
+              "to": ["bar@example.com", "postmaster@sandboxee25071432c844e08c28e9438f9f8986.mailgun.org"],
+              "subject": "Rho",
+              "text": message})
 
 def makeWebhookResult(data):
     query = data.get('query')
@@ -86,9 +100,9 @@ def makeWebhookResult(data):
     return {
         "speech": speech,
         "displayText": speech,
-        # "data": data,
+        "data": data,
         # "contextOut": [],
-        "source": "apiai-weather-webhook-sample"
+        "source": "rhobot-email"
     }
 
 
