@@ -3,6 +3,11 @@
 import urllib
 import json
 import os
+import requests
+import pycurl
+import cStringIO
+
+
 
 from flask import Flask
 from flask import request
@@ -12,17 +17,28 @@ from flask import make_response
 app = Flask(__name__)
 
 
-@app.route('/webhook', methods=['POST'])
+
+@app.route('/webhook', methods=['GET','POST'])
 def webhook():
+    buf = cStringIO.StringIO()
+    c = pycurl.Curl()
+    c.setopt(c.HTTPHEADER, ['Authorization:Bearer 55e0b7af149a47a7b0646ad5c264cba4'])
+    c.setopt(c.URL, 'https://api.api.ai/api/query?v=20150910&query=jkjedkj&lang=en&sessionId=59a29603-4bed-4506-999c-6a73c13d4a73&timezone=America/Montreal')
+    c.setopt(c.WRITEFUNCTION, buf.write)
+    c.perform()
+
+    #req =  json.loads(buf.getvalue())
+    buf.close()
+
     req = request.get_json(silent=True, force=True)
 
     print("Request:")
-    print(json.dumps(req, indent=4))
+    #print(json.dumps(req, indent=4))
 
     res = processRequest(req)
 
     res = json.dumps(res, indent=4)
-    # print(res)
+
     r = make_response(res)
     r.headers['Content-Type'] = 'application/json'
     return r
@@ -30,9 +46,8 @@ def webhook():
 
 
 def processRequest(req):
-    if req.get("result").get("action") != "rhobot-email":
-        return {}
-    print req
+    #if req.get("result").get("action") != "rhobot-email":
+    #    return {}
     email_query = send_simple_message(req)
     if email_query is None:
         return {}
@@ -44,10 +59,13 @@ def processRequest(req):
 
 def send_simple_message(req):
     result = req.get("result")
-    parameters = result.get("parameters")
+    contexts = result.get("contexts")
+    parameters = contexts.get("parameters")
+
     name = parameters.get("name")
     email = parameters.get("from_email")
     message = parameters.get("message")
+    print message
     return requests.post(
         "https://api.mailgun.net/v3/sandboxee25071432c844e08c28e9438f9f8986.mailgun.org/messages",
         auth=("api", "key-bece1656953b819fbe56fc0e5f22a0d2"),
@@ -101,4 +119,4 @@ if __name__ == '__main__':
 
     print "Starting app on port %d" % port
 
-    app.run(debug=False, port=port, host='0.0.0.0')
+    app.run(debug=True, port=port, host='0.0.0.0')
