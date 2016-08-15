@@ -33,7 +33,7 @@ def webhook():
     req = request.get_json(silent=True, force=True)
 
     print("Request:")
-    #print(json.dumps(req, indent=4))
+    print(json.dumps(req, indent=4))
 
     res = processRequest(req)
 
@@ -46,8 +46,8 @@ def webhook():
 
 
 def processRequest(req):
-    #if req.get("result").get("action") != "rhobot-email":
-    #    return {}
+    if req.get("result").get("action") != "rhobot-email":
+        return {}
     email_query = send_simple_message(req)
     if email_query is None:
         return {}
