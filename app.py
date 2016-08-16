@@ -51,12 +51,13 @@ def processRequest(req):
 def send_simple_message(req):
     result = req["result"]
     parameters = result["parameters"]
-    rhobot_name = parameters["user_name"]
+    #rhobot_name = parameters["user_name"]
+    rhobot_subject = parameters["subject"]
     rhobot_email = parameters["from_email"]
     rhobot_message = parameters["message"]
     sg = sendgrid.SendGridAPIClient(apikey= os.environ['SENDGRID_API_KEY'])
     from_email = Email(rhobot_email)
-    subject = "A message from " + rhobot_name
+    subject = rhobot_subject
     to_email = Email(rhodium_email)
     content = Content("text/plain", rhobot_message)
     mail = Mail(from_email, subject, to_email, content)
