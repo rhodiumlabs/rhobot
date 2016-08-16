@@ -3,7 +3,6 @@
 import urllib
 import json
 import os
-import requests
 import sendgrid
 import os
 from sendgrid.helpers.mail import *
@@ -55,7 +54,7 @@ def send_simple_message(req):
     rhobot_name = parameters["user_name"]
     rhobot_email = parameters["from_email"]
     rhobot_message = parameters["message"]
-    sg = sendgrid.SendGridAPIClient(apikey='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')
+    sg = sendgrid.SendGridAPIClient(apikey= os.environ['SENDGRID_API_KEY'])
     from_email = Email(rhobot_email)
     subject = "A message from " + rhobot_name
     to_email = Email(rhodium_email)
