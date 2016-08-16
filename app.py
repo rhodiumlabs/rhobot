@@ -17,12 +17,9 @@ app = Flask(__name__)
 
 
 
-@app.route('/webhook', methods=['GET','POST'])
+@app.route('/webhook', methods=['POST'])
 def webhook():
     req = request.get_json(silent=True, force=True)
-
-    print("Request:")
-    print(json.dumps(req, indent=4))
 
     res = processRequest(req)
 
@@ -35,40 +32,42 @@ def webhook():
 
 
 def processRequest(req):
-    if req.get("result").get("action") != "rhobot-email":
+    if req["result"]["action"] != "rhobot-email":
         return {}
+
     email_query = send_simple_message(req)
     if email_query is None:
         return {}
-    data = json.loads(email_query)
+    import pdb; pdb.set_trace()
+    data = email_query
     res = makeWebhookResult(data)
     return res
 
 
 
-sg = sendgrid.SendGridClient('app55133339@heroku.com', 'dumddfmr5049')
-from_email = Email("test@example.com")
-subject = "Hello World from the SendGrid Python Library!"
-to_email = Email("test@example.com")
-content = Content("text/plain", "Hello, Email!")
-mail = Mail(from_email, subject, to_email, content)
-response = sg.client.mail.send.post(request_body=mail.get())
-print(response.status_code)
-print(response.body)
-print(response.headers)
 
-print(response.status_code)
-print(response.body)
-print(response.headers)
 
 def send_simple_message(req):
-    result = req.get("result")
-    contexts = result.get("contexts")
-    parameters = contexts.get("parameters")
-    name = parameters.get("name")
-    email = parameters.get("from_email")
-    message = parameters.get("message")
-    print message
+    result = req["result"]
+    parameters = result["parameters"]
+    rhobot_name = parameters["user_name"]
+    rhobot_email = parameters["from_email"]
+    rhobot_message = parameters["message"]
+    sg = sendgrid.SendGridAPIClient(apikey='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')
+    from_email = Email(rhobot_email)
+    subject = "A message from " + rhobot_name
+    to_email = Email("hello@rhodium.io")
+    content = Content("text/plain", rhobot_message)
+    mail = Mail(from_email, subject, to_email, content)
+    response = sg.client.mail.send.post(request_body=mail.get())
+    print(response.status_code)
+    print(response.body)
+    print(response.headers)
+
+    print(response.status_code)
+    print(response.body)
+    print(response.headers)
+    return result
 
 def makeWebhookResult(data):
     query = data.get('query')
