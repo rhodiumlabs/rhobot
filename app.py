@@ -75,7 +75,7 @@ def makeExpertiseWebhookResult(req):
     parameters = result["parameters"]
     expertise = parameters["rhodium-expertise"]
     experts = findExperts(expertise)
-    speech = "I found the following team members who have the expertise " + "\""+ expertise + "\": " + experts
+    speech = "I found the following team members who have the expertise " + "\""+ expertise + "\": " + experts + ". \n To learn more about these team members type \"tell me about \"."
 
     print("Response:")
     print(speech)
