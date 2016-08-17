@@ -73,9 +73,9 @@ def send_email(req):
 def makeExpertiseWebhookResult(req):
     result = req["result"]
     parameters = result["parameters"]
-    expertise = parameters["expertise"]
-    experts = findExperts(experts)
-    speech = "The following team members know about " + expertise + ": " + experts
+    expertise = parameters["rhodium-expertise"]
+    experts = findExperts(expertise)
+    speech = "I found the following team members who have the expertise " + "\""+ expertise + "\": " + experts
 
     print("Response:")
     print(speech)
@@ -89,11 +89,34 @@ def makeExpertiseWebhookResult(req):
     }
 
 def findExperts(expertise):
-    engineers = {}
-    engineers.setdefault('engineer', []).append('Ari Ramdial')
-    engineers.setdefault('engineer', []).append('Alex Daskalov')
-    experts = ''.join(str(e) for e in engineers[expertise])
+    team_members = {}
+    team_members.setdefault('engineering', []).append('Ari Ramdial')
+    team_members.setdefault('engineering', []).append('Alex Daskalov')
+    team_members.setdefault('engineering', []).append('Imran Jameel')
+    team_members.setdefault('engineer', []).append('Steven Ding')
+    team_members.setdefault('electrical engineering', []).append('Ari Ramdial')
+    team_members.setdefault('electrical engineering', []).append('Steven Ding')
+    team_members.setdefault('blockchain', []).append('Ari Ramdial')
+    team_members.setdefault('blockchain', []).append('Alex Daskalov')
+    team_members.setdefault('artificial intelligence', []).append('Ari Ramdial')
+    experts = ', '.join(str(e) for e in removeDuplicates(team_members[expertise]))
     return experts
+
+def removeDuplicates(seq, idfun=None):
+   # order preserving
+   if idfun is None:
+       def idfun(x): return x
+   seen = {}
+   result = []
+   for item in seq:
+       marker = idfun(item)
+       # in old Python versions:
+       # if seen.has_key(marker)
+       # but in new ones:
+       if marker in seen: continue
+       seen[marker] = 1
+       result.append(item)
+   return result
 
 def makeEmailWebhookResult(data):
     speech = "I sent an email to " + rhodium_email + "! "
