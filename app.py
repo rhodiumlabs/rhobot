@@ -74,10 +74,9 @@ def makeExpertiseWebhookResult(req):
     result = req["result"]
     parameters = result["parameters"]
     expertise = parameters["expertise"]
-    engineers = Set(['Ari Ramdial', 'Alex Daskalov', 'Nadim Islam', 'Steven Ding'])
-    for expertise in engineers:
-        speech = "The following team members know about " + expertise + ": " +
-                engineers
+    experts = findExperts(experts)
+    speech = "The following team members know about " + expertise + ": " +
+                experts
 
     print("Response:")
     print(speech)
@@ -89,6 +88,13 @@ def makeExpertiseWebhookResult(req):
         "contextOut": [],
         "source": "team-expertise"
     }
+
+def findExperts(expertise):
+    engineers = {}
+    engineers.setdefault('engineer', []).append('Ari Ramdial')
+    engineers.setdefault('engineer', []).append('Alex Daskalov')
+    experts = ''.join(str(e) for e in engineers[expertise])
+    return experts
 
 def makeEmailWebhookResult(data):
     speech = "I sent an email to " + rhodium_email + "! "
