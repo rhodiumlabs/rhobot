@@ -75,8 +75,7 @@ def makeExpertiseWebhookResult(req):
     parameters = result["parameters"]
     expertise = parameters["expertise"]
     experts = findExperts(experts)
-    speech = "The following team members know about " + expertise + ": " +
-                experts
+    speech = "The following team members know about " + expertise + ": " + experts
 
     print("Response:")
     print(speech)
