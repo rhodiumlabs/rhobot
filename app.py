@@ -4,7 +4,7 @@ import urllib
 import json
 import os
 import sendgrid
-import os
+from sets import Set
 from sendgrid.helpers.mail import *
 
 from flask import Flask
@@ -33,22 +33,20 @@ def webhook():
 
 
 def processRequest(req):
-    if req["result"]["action"] != "rhobot-email":
+    if req["result"]["action"] == "rhobot-email":
+        email_query = send_email(req)
+        if email_query is None:
+            return {}
+        data = email_query
+        res = makeEmailWebhookResult(data)
+        return res
+    elif req["result"]["action"] == "team-expertise":
+        res = makeExpertiseWebhookResult(req)
+        return res
+    else:
         return {}
 
-    email_query = send_simple_message(req)
-    if email_query is None:
-        return {}
-
-    data = email_query
-    res = makeWebhookResult(data)
-    return res
-
-
-
-
-
-def send_simple_message(req):
+def send_email(req):
     result = req["result"]
     parameters = result["parameters"]
     #rhobot_name = parameters["user_name"]
@@ -56,6 +54,7 @@ def send_simple_message(req):
     rhobot_email = parameters["from_email"]
     rhobot_message = parameters["message"]
     sg = sendgrid.SendGridAPIClient(apikey= os.environ['SENDGRID_API_KEY'])
+
     from_email = Email(rhobot_email)
     subject = rhobot_subject
     to_email = Email(rhodium_email)
@@ -71,9 +70,27 @@ def send_simple_message(req):
     print(response.headers)
     return result
 
-def makeWebhookResult(data):
-    # print(json.dumps(item, indent=4))
+def makeExpertiseWebhookResult(req):
+    result = req["result"]
+    parameters = result["parameters"]
+    expertise = parameters["expertise"]
+    engineers = Set(['Ari Ramdial', 'Alex Daskalov', 'Nadim Islam', 'Steven Ding'])
+    for expertise in engineers:
+        speech = "The following team members know about " + expertise + ": " +
+                engineers
 
+    print("Response:")
+    print(speech)
+
+    return {
+        "speech": speech,
+        "displayText": speech,
+        "data": req,
+        "contextOut": [],
+        "source": "team-expertise"
+    }
+
+def makeEmailWebhookResult(data):
     speech = "I sent an email to " + rhodium_email + "! "
 
     print("Response:")
@@ -86,6 +103,7 @@ def makeWebhookResult(data):
         "contextOut": [],
         "source": "rhobot-email"
     }
+
 
 
 if __name__ == '__main__':
