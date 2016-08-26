@@ -75,7 +75,7 @@ def makeExpertiseWebhookResult(req):
     parameters = result["parameters"]
     expertise = parameters["rhodium-expertise"]
     experts = findExperts(expertise)
-    speech = "I found the following team members who have the expertise " + "\""+ expertise + "\": " + experts 
+    speech = "I found the following team members who have the expertise " + "\""+ expertise + "\": " + experts
     print("Response:")
     print(speech)
 
@@ -92,12 +92,16 @@ def findExperts(expertise):
     team_members.setdefault('engineering', []).append('Ari Ramdial')
     team_members.setdefault('engineering', []).append('Alex Daskalov')
     team_members.setdefault('engineering', []).append('Imran Jameel')
+    team_members.setdefault('engineering', []).append('Steven Ding')
     team_members.setdefault('engineer', []).append('Steven Ding')
+    team_members.setdefault('engineer', []).append('Ari Ramdial')
+    team_members.setdefault('engineer', []).append('Alex Daskalov')
     team_members.setdefault('electrical engineering', []).append('Ari Ramdial')
     team_members.setdefault('electrical engineering', []).append('Steven Ding')
     team_members.setdefault('blockchain', []).append('Ari Ramdial')
     team_members.setdefault('blockchain', []).append('Alex Daskalov')
     team_members.setdefault('artificial intelligence', []).append('Ari Ramdial')
+    team_members.setdefault('industrial design', []).append('Anjali Chandrashekar')
     experts = ', '.join(str(e) for e in removeDuplicates(team_members[expertise]))
     return experts
 
